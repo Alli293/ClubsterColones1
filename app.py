@@ -101,28 +101,42 @@ fig_bar.update_layout(
 
 st.plotly_chart(fig_bar, use_container_width=True)
 
+
 # ===============================
-# BOXPLOT SALARIAL
+# SALARIO PROMEDIO POR CATEGORÍA Y CLUSTER
 # ===============================
-fig_box = px.box(
-    df,
-    x="categoria_semantica_final",
-    y="salario_limpio_colones",
+df_cat_cluster = (
+    df.groupby(["categoria_semantica_final", "cluster_salario"])
+    .agg(
+        salario_promedio=("salario_limpio_colones", "mean"),
+        cantidad=("salario_limpio_colones", "count")
+    )
+    .reset_index()
+)
+
+fig_cluster_cat = px.bar(
+    df_cat_cluster,
+    x="salario_promedio",
+    y="categoria_semantica_final",
     color="cluster_salario",
-    title="Distribución salarial por categoría semántica",
+    orientation="h",
+    title="Salario promedio por categoría semántica según cluster salarial",
     labels={
-        "salario_limpio_colones": "Salario mensual (CRC)",
+        "salario_promedio": "Salario promedio mensual (CRC)",
         "categoria_semantica_final": "Categoría semántica",
         "cluster_salario": "Cluster salarial"
-    }
+    },
+    text=df_cat_cluster["salario_promedio"].round(0)
 )
 
-fig_box.update_layout(
-    xaxis_tickangle=-40,
-    yaxis_tickformat=","
+fig_cluster_cat.update_layout(
+    xaxis_tickformat=",",
+    yaxis=dict(title=""),
+    uniformtext_minsize=10,
+    uniformtext_mode="hide"
 )
 
-st.plotly_chart(fig_box, use_container_width=True)
+st.plotly_chart(fig_cluster_cat, use_container_width=True)
 
 # ===============================
 # TABLA RESUMEN FINAL
