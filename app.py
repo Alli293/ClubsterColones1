@@ -42,7 +42,7 @@ with col2:
     )
 
 with col4:
-    st.metric("Cluster Semanticos analizados", 17)
+    st.metric("Cluster Semanticos analizados", 18)
 
 st.divider()
 
