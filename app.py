@@ -42,7 +42,7 @@ with col2:
     )
 
 with col4:
-    st.metric("Categorías analizadas", 17)
+    st.metric("Categorías analizadas", 12)
 
 st.divider()
 
