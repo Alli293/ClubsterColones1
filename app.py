@@ -33,7 +33,7 @@ df, df_cat = load_data()
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
-    st.metric("Registros analizados", len(df))
+      st.metric("Registros analizados", "720 (deduplicados)")
 
 with col2:
     st.metric(
