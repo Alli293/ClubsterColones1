@@ -1,0 +1,13 @@
+categoria_semantica_final,cantidad_puestos,salario_promedio,salario_mediana,salario_min,salario_max,cluster_dominante
+Desarrollo Fullstack,1,1111111.0,1111111.0,1111111.0,1111111.0,1
+Ingeniería Industrial,4,867500.0,885000.0,600000.0,1100000.0,1
+Salud / Asistencia,3,833333.3333333334,825000.0,825000.0,850000.0,1
+Analítica y Ciencia de Datos,2,665000.0,665000.0,580000.0,750000.0,0
+Administración / Oficina,7,653099.8571428572,600000.0,400000.0,949999.0,0
+Soporte Técnico / Infra,8,588512.5,500000.0,413100.0,900000.0,0
+Desarrollo Backend,2,560000.0,560000.0,520000.0,600000.0,0
+QA / Pruebas,1,550000.0,550000.0,550000.0,550000.0,0
+Marketing,6,545500.0,481500.0,310000.0,1000000.0,0
+Gestión de Proyectos,1,533000.0,533000.0,533000.0,533000.0,0
+Ingeniería Electrónica,4,494300.0,530000.0,367200.0,550000.0,0
+Ingeniería Civil,1,367108.0,367108.0,367108.0,367108.0,0
