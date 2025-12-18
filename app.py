@@ -41,12 +41,6 @@ with col2:
         format_crc(df["salario_limpio_colones"].mean())
     )
 
-with col3:
-    st.metric(
-        "Salario mediano general",
-        format_crc(df["salario_limpio_colones"].median())
-    )
-
 with col4:
     st.metric("Categorías analizadas", 17)
 
