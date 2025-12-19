@@ -86,69 +86,38 @@ st.plotly_chart(fig_bar, use_container_width=True)
 # SALARIO PROMEDIO POR CATEGORÍA Y CLUSTER
 # ===============================
 df_cat_cluster = (
-
     df.groupby(["categoria_semantica_final", "cluster_salario"])
-
     .agg(
-
         salario_promedio=("salario_limpio_colones", "mean"),
-
         cantidad=("salario_limpio_colones", "count")
-
     )
-
     .reset_index()
-
 )
 
-# Crear paleta de colores personalizada - blanco y azul como estaba
-color_discrete_map = {'bajo': '#FFFFFF', 'alto': '#1f77b4'}
+# Reemplazar 0 y 1 por bajo y alto en la columna cluster_salario
+df_cat_cluster['cluster_salario'] = df_cat_cluster['cluster_salario'].replace({0: 'bajo', 1: 'alto'})
 
 fig_cluster_cat = px.bar(
-
     df_cat_cluster,
-
     x="salario_promedio",
-
     y="categoria_semantica_final",
-
     color="cluster_salario",
-
     orientation="h",
-
     title="Salario promedio por categoría semántica según cluster salarial",
-
     labels={
-
         "salario_promedio": "Salario promedio mensual (CRC)",
-
         "categoria_semantica_final": "Categoría semántica",
-
         "cluster_salario": "Cluster salarial"
-
     },
-
-    text=df_cat_cluster["salario_promedio"].round(0),
-    
-    color_discrete_map=color_discrete_map
-
+    text=df_cat_cluster["salario_promedio"].round(0)
 )
-
-
 
 fig_cluster_cat.update_layout(
-
     xaxis_tickformat=",",
-
     yaxis=dict(title=""),
-
     uniformtext_minsize=10,
-
     uniformtext_mode="hide"
-
 )
-
-
 
 st.plotly_chart(fig_cluster_cat, use_container_width=True)
 # ===============================
