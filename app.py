@@ -82,6 +82,9 @@ st.plotly_chart(fig_bar, use_container_width=True)
 # ===============================
 # SALARIO PROMEDIO POR CATEGORÍA Y CLUSTER
 # ===============================
+# ===============================
+# SALARIO PROMEDIO POR CATEGORÍA Y CLUSTER
+# ===============================
 df_cat_cluster = (
 
     df.groupby(["categoria_semantica_final", "cluster_salario"])
@@ -98,8 +101,8 @@ df_cat_cluster = (
 
 )
 
-# Crear paleta de colores personalizada
-color_discrete_map = {'bajo': '#FF6B6B', 'alto': '#4ECDC4'}
+# Crear paleta de colores personalizada - blanco y azul como estaba
+color_discrete_map = {'bajo': '#FFFFFF', 'alto': '#1f77b4'}
 
 fig_cluster_cat = px.bar(
 
