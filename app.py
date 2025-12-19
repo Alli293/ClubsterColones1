@@ -47,28 +47,6 @@ with col4:
 st.divider()
 
 # ===============================
-# DISTRIBUCIÓN SALARIAL
-# ===============================
-fig_hist = px.histogram(
-    df,
-    x="salario_limpio_colones",
-    color="cluster_salario",
-    nbins=20,
-    title="Distribución de salarios mensuales por cluster",
-    labels={
-        "salario_limpio_colones": "Salario mensual (CRC)",
-        "cluster_salario": "Cluster salarial"
-    }
-)
-
-fig_hist.update_layout(
-    bargap=0.1,
-    xaxis_tickformat=","
-)
-
-st.plotly_chart(fig_hist, use_container_width=True)
-
-# ===============================
 # SALARIO PROMEDIO POR CATEGORÍA
 # ===============================
 df_cat_sorted = df_cat.sort_values("salario_promedio", ascending=True)
@@ -99,6 +77,9 @@ st.plotly_chart(fig_bar, use_container_width=True)
 # ===============================
 # SALARIO PROMEDIO POR CATEGORÍA Y CLUSTER
 # ===============================
+# ===============================
+# SALARIO PROMEDIO POR CATEGORÍA Y CLUSTER (VERSIÓN MEJORADA)
+# ===============================
 df_cat_cluster = (
     df.groupby(["categoria_semantica_final", "cluster_salario"])
     .agg(
@@ -108,26 +89,32 @@ df_cat_cluster = (
     .reset_index()
 )
 
+# TRUCO 1: Convertimos el cluster a texto para que los colores sean discretos y no una escala
+df_cat_cluster["cluster_salario"] = df_cat_cluster["cluster_salario"].astype(str)
+
 fig_cluster_cat = px.bar(
     df_cat_cluster,
     x="salario_promedio",
     y="categoria_semantica_final",
     color="cluster_salario",
     orientation="h",
-    title="Salario promedio por categoría semántica según cluster salarial",
+    # TRUCO 2: barmode="group" pone las barras una al lado de la otra en lugar de encimadas
+    barmode="group", 
+    title="Comparativa Salarial: Salarios bajos  vs Salarios altos por Categoría",
     labels={
         "salario_promedio": "Salario promedio mensual (CRC)",
-        "categoria_semantica_final": "Categoría semántica",
-        "cluster_salario": "Cluster salarial"
+        "categoria_semantica_final": "Área de Trabajo",
+        "cluster_salario": "Nivel de Cluster"
     },
-    text=df_cat_cluster["salario_promedio"].round(0)
+    # TRUCO 3: Colores específicos para que contrasten bien
+    color_discrete_map={"0": "#1f77b4", "1": "#ff7f0e"} 
 )
 
 fig_cluster_cat.update_layout(
     xaxis_tickformat=",",
-    yaxis=dict(title=""),
-    uniformtext_minsize=10,
-    uniformtext_mode="hide"
+    yaxis={'categoryorder':'total ascending'}, # Ordena por salario para mejor lectura
+    legend_title_text="Segmento Salarial",
+    height=600 # Ajusta el tamaño para que no se vea apretado
 )
 
 st.plotly_chart(fig_cluster_cat, use_container_width=True)
