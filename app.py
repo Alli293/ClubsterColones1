@@ -23,6 +23,11 @@ def format_crc(value):
 def load_data():
     df_cluster = pd.read_csv("dataset_salarios_con_cluster.csv")
     df_categoria = pd.read_csv("resumen_salarios_por_categoria.csv")
+    
+    # Convertir cluster 0 y 1 a bajo y alto
+    df_cluster['cluster_salario'] = df_cluster['cluster_salario'].replace({0: 'bajo', 1: 'alto'})
+    df_categoria['cluster_dominante'] = df_categoria['cluster_dominante'].replace({0: 'bajo', 1: 'alto'})
+    
     return df_cluster, df_categoria
 
 df, df_cat = load_data()
@@ -93,7 +98,8 @@ df_cat_cluster = (
 
 )
 
-
+# Crear paleta de colores personalizada
+color_discrete_map = {'bajo': '#FF6B6B', 'alto': '#4ECDC4'}
 
 fig_cluster_cat = px.bar(
 
@@ -119,7 +125,9 @@ fig_cluster_cat = px.bar(
 
     },
 
-    text=df_cat_cluster["salario_promedio"].round(0)
+    text=df_cat_cluster["salario_promedio"].round(0),
+    
+    color_discrete_map=color_discrete_map
 
 )
 
@@ -148,7 +156,6 @@ st.subheader("Resumen salarial por categoría semántica")
 
 df_table = df_cat[[
     "categoria_semantica_final",
-    "cantidad_puestos",
     "salario_promedio",
     "salario_mediana",
     "salario_min",
