@@ -82,9 +82,6 @@ st.plotly_chart(fig_bar, use_container_width=True)
 # ===============================
 # SALARIO PROMEDIO POR CATEGORÍA Y CLUSTER
 # ===============================
-# ===============================
-# SALARIO PROMEDIO POR CATEGORÍA Y CLUSTER
-# ===============================
 df_cat_cluster = (
     df.groupby(["categoria_semantica_final", "cluster_salario"])
     .agg(
@@ -94,9 +91,10 @@ df_cat_cluster = (
     .reset_index()
 )
 
-# Reemplazar 0 y 1 por bajo y alto en la columna cluster_salario
+# Reemplazar 0 y 1 por bajo y alto
 df_cat_cluster['cluster_salario'] = df_cat_cluster['cluster_salario'].replace({0: 'bajo', 1: 'alto'})
 
+# Crear un gráfico de barras agrupadas para mejor visualización
 fig_cluster_cat = px.bar(
     df_cat_cluster,
     x="salario_promedio",
@@ -109,15 +107,20 @@ fig_cluster_cat = px.bar(
         "categoria_semantica_final": "Categoría semántica",
         "cluster_salario": "Cluster salarial"
     },
-    text=df_cat_cluster["salario_promedio"].round(0)
+    text=df_cat_cluster["salario_promedio"].round(0),
+    barmode='group'  # Cambia de 'stack' (apilado) a 'group' (agrupado)
 )
 
 fig_cluster_cat.update_layout(
     xaxis_tickformat=",",
     yaxis=dict(title=""),
-    uniformtext_minsize=10,
-    uniformtext_mode="hide"
+    uniformtext_minsize=8,
+    uniformtext_mode='hide',
+    legend_title_text="Cluster Salarial"
 )
+
+# Formatear el texto de las barras
+fig_cluster_cat.update_traces(texttemplate='%{text:,.0f}', textposition='inside')
 
 st.plotly_chart(fig_cluster_cat, use_container_width=True)
 # ===============================
