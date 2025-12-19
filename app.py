@@ -78,47 +78,48 @@ st.plotly_chart(fig_bar, use_container_width=True)
 # SALARIO PROMEDIO POR CATEGORÍA Y CLUSTER
 # ===============================
 # ===============================
-# SALARIO PROMEDIO POR CATEGORÍA Y CLUSTER (VERSIÓN MEJORADA)
+# SALARIO PROMEDIO POR CATEGORÍA Y CLUSTER (VERSIÓN FINAL)
 # ===============================
-df_cat_cluster = (
-    df.groupby(["categoria_semantica_final", "cluster_salario"])
-    .agg(
-        salario_promedio=("salario_limpio_colones", "mean"),
-        cantidad=("salario_limpio_colones", "count")
-    )
-    .reset_index()
-)
 
-# TRUCO 1: Convertimos el cluster a texto para que los colores sean discretos y no una escala
+# 1. Aseguramos que el cluster sea texto para colores discretos
 df_cat_cluster["cluster_salario"] = df_cat_cluster["cluster_salario"].astype(str)
 
+# 2. Creamos el gráfico con barras superpuestas (overlay)
 fig_cluster_cat = px.bar(
     df_cat_cluster,
     x="salario_promedio",
     y="categoria_semantica_final",
     color="cluster_salario",
     orientation="h",
-    # TRUCO 2: barmode="group" pone las barras una al lado de la otra en lugar de encimadas
-    barmode="group", 
-    title="Comparativa Salarial: Salarios bajos  vs Salarios altos por Categoría",
+    barmode="overlay", # Las barras se dibujan una sobre otra
+    title="Comparativa de Rangos Salariales por Categoría",
     labels={
         "salario_promedio": "Salario promedio mensual (CRC)",
         "categoria_semantica_final": "Área de Trabajo",
-        "cluster_salario": "Nivel de Cluster"
+        "cluster_salario": "Segmento"
     },
-    # TRUCO 3: Colores específicos para que contrasten bien
-    color_discrete_map={"0": "#1f77b4", "1": "#ff7f0e"} 
+    # Colores elegantes: Azul para base, Naranja para el tope
+    color_discrete_map={"0": "#1f77b4", "1": "#ef7f1a"} 
+)
+
+# 3. Ajustamos grosores y opacidad para que se vea una "dentro" de otra
+fig_cluster_cat.update_traces(
+    patch={"marker_opacity": 0.8, "width": 0.5}, # Barra base más delgada
+    selector={"name": "0"}
+)
+fig_cluster_cat.update_traces(
+    patch={"marker_opacity": 0.6, "width": 0.8}, # Barra alta más gruesa y transparente
+    selector={"name": "1"}
 )
 
 fig_cluster_cat.update_layout(
     xaxis_tickformat=",",
-    yaxis={'categoryorder':'total ascending'}, # Ordena por salario para mejor lectura
-    legend_title_text="Segmento Salarial",
-    height=600 # Ajusta el tamaño para que no se vea apretado
+    yaxis={'categoryorder':'total ascending'},
+    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+    margin=dict(l=200) # Espacio para que no se corten los nombres de las categorías
 )
 
 st.plotly_chart(fig_cluster_cat, use_container_width=True)
-
 # ===============================
 # TABLA RESUMEN FINAL
 # ===============================
