@@ -77,47 +77,67 @@ st.plotly_chart(fig_bar, use_container_width=True)
 # ===============================
 # SALARIO PROMEDIO POR CATEGORÍA Y CLUSTER
 # ===============================
-# ===============================
-# SALARIO PROMEDIO POR CATEGORÍA Y CLUSTER (VERSIÓN FINAL)
-# ===============================
+df_cat_cluster = (
 
-# 1. Aseguramos que el cluster sea texto para colores discretos
-df_cat_cluster["cluster_salario"] = df_cat_cluster["cluster_salario"].astype(str)
+    df.groupby(["categoria_semantica_final", "cluster_salario"])
 
-# 2. Creamos el gráfico con barras superpuestas (overlay)
+    .agg(
+
+        salario_promedio=("salario_limpio_colones", "mean"),
+
+        cantidad=("salario_limpio_colones", "count")
+
+    )
+
+    .reset_index()
+
+)
+
+
+
 fig_cluster_cat = px.bar(
+
     df_cat_cluster,
+
     x="salario_promedio",
+
     y="categoria_semantica_final",
+
     color="cluster_salario",
+
     orientation="h",
-    barmode="overlay", # Las barras se dibujan una sobre otra
-    title="Comparativa de Rangos Salariales por Categoría",
+
+    title="Salario promedio por categoría semántica según cluster salarial",
+
     labels={
+
         "salario_promedio": "Salario promedio mensual (CRC)",
-        "categoria_semantica_final": "Área de Trabajo",
-        "cluster_salario": "Segmento"
+
+        "categoria_semantica_final": "Categoría semántica",
+
+        "cluster_salario": "Cluster salarial"
+
     },
-    # Colores elegantes: Azul para base, Naranja para el tope
-    color_discrete_map={"0": "#1f77b4", "1": "#ef7f1a"} 
+
+    text=df_cat_cluster["salario_promedio"].round(0)
+
 )
 
-# 3. Ajustamos grosores y opacidad para que se vea una "dentro" de otra
-fig_cluster_cat.update_traces(
-    patch={"marker_opacity": 0.8, "width": 0.5}, # Barra base más delgada
-    selector={"name": "0"}
-)
-fig_cluster_cat.update_traces(
-    patch={"marker_opacity": 0.6, "width": 0.8}, # Barra alta más gruesa y transparente
-    selector={"name": "1"}
-)
+
 
 fig_cluster_cat.update_layout(
+
     xaxis_tickformat=",",
-    yaxis={'categoryorder':'total ascending'},
-    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-    margin=dict(l=200) # Espacio para que no se corten los nombres de las categorías
+
+    yaxis=dict(title=""),
+
+    uniformtext_minsize=10,
+
+    uniformtext_mode="hide"
+
 )
+
+
 
 st.plotly_chart(fig_cluster_cat, use_container_width=True)
 # ===============================
