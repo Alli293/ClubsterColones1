@@ -94,35 +94,65 @@ df_cat_cluster = (
 # Reemplazar 0 y 1 por bajo y alto
 df_cat_cluster['cluster_salario'] = df_cat_cluster['cluster_salario'].replace({0: 'bajo', 1: 'alto'})
 
-# Crear un gráfico de barras agrupadas para mejor visualización
-fig_cluster_cat = px.bar(
-    df_cat_cluster,
-    x="salario_promedio",
-    y="categoria_semantica_final",
-    color="cluster_salario",
-    orientation="h",
-    title="Salario promedio por categoría semántica según cluster salarial",
-    labels={
-        "salario_promedio": "Salario promedio mensual (CRC)",
-        "categoria_semantica_final": "Categoría semántica",
-        "cluster_salario": "Cluster salarial"
-    },
-    text=df_cat_cluster["salario_promedio"].round(0),
-    barmode='group'  # Cambia de 'stack' (apilado) a 'group' (agrupado)
-)
+# Separar los datos por cluster
+df_bajo = df_cat_cluster[df_cat_cluster['cluster_salario'] == 'bajo'].copy()
+df_alto = df_cat_cluster[df_cat_cluster['cluster_salario'] == 'alto'].copy()
 
-fig_cluster_cat.update_layout(
-    xaxis_tickformat=",",
-    yaxis=dict(title=""),
-    uniformtext_minsize=8,
-    uniformtext_mode='hide',
-    legend_title_text="Cluster Salarial"
-)
+# Ordenar por categoría para consistencia
+categorias_ordenadas = df_cat_cluster['categoria_semantica_final'].unique()
 
-# Formatear el texto de las barras
-fig_cluster_cat.update_traces(texttemplate='%{text:,.0f}', textposition='inside')
+# Crear dos gráficos lado a lado
+col1, col2 = st.columns(2)
 
-st.plotly_chart(fig_cluster_cat, use_container_width=True)
+with col1:
+    fig_bajo = px.bar(
+        df_bajo,
+        x="salario_promedio",
+        y="categoria_semantica_final",
+        orientation="h",
+        title="Salario promedio - Cluster BAJO",
+        labels={
+            "salario_promedio": "Salario promedio (CRC)",
+            "categoria_semantica_final": "Categoría semántica"
+        },
+        text=df_bajo["salario_promedio"].round(0),
+        color_discrete_sequence=['lightblue']  # Color claro para bajo
+    )
+    
+    fig_bajo.update_layout(
+        xaxis_tickformat=",",
+        yaxis=dict(title="", categoryorder='array', categoryarray=categorias_ordenadas),
+        uniformtext_minsize=8,
+        showlegend=False
+    )
+    
+    fig_bajo.update_traces(texttemplate='%{text:,.0f}', textposition='inside')
+    st.plotly_chart(fig_bajo, use_container_width=True)
+
+with col2:
+    fig_alto = px.bar(
+        df_alto,
+        x="salario_promedio",
+        y="categoria_semantica_final",
+        orientation="h",
+        title="Salario promedio - Cluster ALTO",
+        labels={
+            "salario_promedio": "Salario promedio (CRC)",
+            "categoria_semantica_final": "Categoría semántica"
+        },
+        text=df_alto["salario_promedio"].round(0),
+        color_discrete_sequence=['darkblue']  # Color oscuro para alto
+    )
+    
+    fig_alto.update_layout(
+        xaxis_tickformat=",",
+        yaxis=dict(title="", categoryorder='array', categoryarray=categorias_ordenadas),
+        uniformtext_minsize=8,
+        showlegend=False
+    )
+    
+    fig_alto.update_traces(texttemplate='%{text:,.0f}', textposition='inside')
+    st.plotly_chart(fig_alto, use_container_width=True)
 # ===============================
 # TABLA RESUMEN FINAL
 # ===============================
